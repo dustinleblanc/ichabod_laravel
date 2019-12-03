@@ -1,0 +1,42 @@
+name: ichabod
+recipe: laravel
+excludes:
+  - api/vendor
+  - api/storage
+  - api/node_modules
+  - client/node_modules
+config:
+  webroot: api/public
+  database: postgres
+proxy:
+  nuxt:
+    - ichabod-fe.lndo.site
+services:
+  appserver:
+    override:
+      environment:
+        DB_DATABASE: laravel
+        DB_USER: postgres
+        DB_PASSWORD: null
+    build:
+      - cd /app/api && composer install
+      - cd /app/api && cp -n .env.example .env
+      - cd /app/api && php artisan key:generate
+  nuxt:
+    type: node
+    command: cd /app/client && yarn dev --hostname 0.0.0.0 --port 80
+    build:
+      - cd /app/client && yarn
+tooling:
+  artisan:
+    service: appserver
+    cmd: php /app/api/artisan
+  composer:
+    service: appserver
+    cmd: cd /app/api && composer
+  yarn:
+    service: nuxt
+    cmd: cd /app/client && yarn
+  nuxt:
+    service: nuxt
+    cmd: cd /app/client && nuxt
