@@ -36,9 +36,19 @@ export default {
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/auth',
     '@nuxtjs/axios',
     '@nuxtjs/pwa'
   ],
+  auth: {
+    strategies: {
+      'laravel.passport': {
+        url: `${process.env.API_URL}`,
+        client_id: process.env.API_CLIENT_ID,
+        client_secret: process.env.API_CLIENT_SECRET
+      }
+    }
+  },
   /*
    ** Axios module configuration
    */
